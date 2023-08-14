@@ -17,7 +17,6 @@
             @endif
             <h1>Participantes -- Grupo {{ $grupo }}</h1>
 
-            <a href="{{ url('alumnos/create') }}" class="btn btn-success">Añadir participante</a>
             <br><br>
             <div class="row">
                 <div class="col col-12">
@@ -92,7 +91,7 @@
                                                 name="alumnos-seleccionados[]" value="{{ $alumno->id }}">
                                             <label class="form-check-label"
                                                 for="alumno_{{ $alumno->id }}">{{ $alumno->nombre }}
-                                                {{ $alumno->apellidos }} ---- Dni: {{ $alumno->dni }} </label>
+                                                {{ $alumno->apellidos }} ---- Dni: {{ $alumno->dni }} ---- Grupo: {{$alumno->codigoGrupo}} </label>
                                         </div>
                                     </div>
                                 @endforeach

@@ -28,8 +28,8 @@
 
                                 <th>ID</th>
                                 <th>Nombre</th>
-                                <th>maximoParticipantes</th>
-                                <th>clase</th>
+                                <th>Máximo Participantes</th>
+                                <th>Clase</th>
                                 <th>Opciones</th>
                             </thead>
                             <tbody>
@@ -78,8 +78,8 @@
 
                             <th>ID</th>
                             <th>Nombre</th>
-                            <th>maximoParticipantes</th>
-                            <th>clase</th>
+                            <th>Nivel</th>
+                            
                             <th>Opciones</th>
                         </thead>
                         <tbody>

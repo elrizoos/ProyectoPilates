@@ -36,12 +36,12 @@ Route::group(['middleware' => 'auth'], function() {
 Route::get("/alumnos", function() {
     return view('alumnos.index');
 });
-Route::resource('alumnos', AlumnoController::class);
-Route::resource('grupos-clases', GrupoController::class);
-Route::get('/grupos-clases/grupos/{grupo}/mostrar-alumnos', [GrupoController::class, 'mostrarAlumnos'])->name('grupos.mostrar-alumnos');
+Route::resource('alumnos', AlumnoController::class)->middleware('auth');
+Route::resource('grupos-clases', GrupoController::class)->middleware('auth');
+Route::get('/grupos-clases/grupos/{grupo}/mostrar-alumnos', [GrupoController::class, 'mostrarAlumnos'])->name('grupos.mostrar-alumnos')->middleware('auth');
 
-Route::get('/alumnos/{grupo}/mostrar-alumnos', [AlumnoController::class, 'mostrarAlumnos'])->name('alumnos.mostrar-alumnos');
-Route::get("/grupos-clases/grupos/{grupo}/asignar-alumnos", [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar-alumnos');
+Route::get('/alumnos/{grupo}/mostrar-alumnos', [AlumnoController::class, 'mostrarAlumnos'])->name('alumnos.mostrar-alumnos')->middleware('auth');
+Route::get("/grupos-clases/grupos/{grupo}/asignar-alumnos", [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar-alumnos')->middleware('auth');
 
 
 
