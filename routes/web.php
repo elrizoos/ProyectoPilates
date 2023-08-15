@@ -28,10 +28,14 @@ Route::resource('empleados', EmpleadoController::class)->middleware('auth');
 Auth::routes(['register'=>false, 'reset' => false]);
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/home', [EmpleadoController::class, 'index'])->name('home');
+    Route::get('/home', function(){
+        return view('index');
+    })->name('home');
 });
 Route::group(['middleware' => 'auth'], function() {
-    Route::get('/', [EmpleadoController::class, 'index'])->name('home');
+    Route::get('/', function () {
+        return view('index');
+    })->name('home');
 });
 Route::get("/alumnos", function() {
     return view('alumnos.index');

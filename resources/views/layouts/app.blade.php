@@ -39,6 +39,15 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
+                        @if ($modo === 'Centro de Control')
+                            <li class="nav-item">
+                                <a class="nav-link"href="{{ url('/empleados') }}">Gestionar Empleados</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link"href="{{ url('/alumnos') }}">Gestionar Alumnos</a>
+                            </li>
+                        @endif
                         @if ($modo === 'Alumnos')
                             <li class="nav-item">
                                 <a class="nav-link"href="{{ url('/empleados') }}">Gestionar Empleados</a>
@@ -46,15 +55,16 @@
                         @endif
                         @if ($modo === 'Empleados')
                             <li class="nav-item">
-                            <a class="nav-link"href="{{ url('/alumnos') }}">Gestionar Alumnos</a>
-                        </li>   
+                                <a class="nav-link"href="{{ url('/alumnos') }}">Gestionar Alumnos</a>
+                            </li>
                         @endif
                         <li class="nav-item">
                             <a class="nav-link"href="{{ url('/empleados') }}">Gestionar Horarios</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link"href="{{ url('/grupos-clases')}}">Gestionar Clases y Grupos</a>
+                            <a class="nav-link"href="{{ url('/grupos-clases') }}">Gestionar Clases y Grupos</a>
                         </li>
+
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
