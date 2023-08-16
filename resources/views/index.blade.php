@@ -11,9 +11,8 @@
 <body>
     @extends('layouts.app', ['modo' => 'Centro de Control'])
     @section('content')
-    
         <div class="container">
-            
+
             @if (Session::has('mensaje'))
                 {{ Session::get('mensaje') }}
             @endif
@@ -24,9 +23,31 @@
                     <div class="contenedorTarjeta">
                         <h3>Control Alumnos</h3>
                         <ul>
-                            <li>Crear nuevo alumno</li>
-                            <li>Editar alumno</li>
-                            <li>Borrar alumno</li>
+                            <li>
+                                <a href="{{ url('/alumnos/create') }}">Crear nuevo alumno</a>
+                            </li>
+                            <li>
+                                <p id="mostrarPopupEdit">Editar alumno</p>
+                                <script>
+                                    document.getElementById('mostrarPopupEdit').addEventListener('click', function(){
+                                        //Url donde se encuentra el contenido que voy a mostrar en la ventana emergente
+                                        var url = "{{route('alumnos.search')}}";
+                                        
+                                        //Ancho y Alto de la ventana emergente
+                                        var width = 600;
+                                        var height = 400;
+
+                                        //Opciones adicionales de la ventana emergente
+                                        var opciones = 'toolbar=no, location=no, directories=no, status=no';
+
+                                        //Abrir la ventana emergente
+                                        window.open(url, 'PopupWindow', opciones);
+                                    });
+                                </script>
+                            </li>
+                            <li>
+                                <p id="mostrarPopupDelete">Borrar alumno</p>
+                            </li>
                         </ul>
                         <input type="button" value="Ir a la configuración general">
                     </div>
@@ -90,5 +111,4 @@
                 </div>
             </div>
         </div>
-        
     @endsection

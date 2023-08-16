@@ -148,4 +148,11 @@ class AlumnoController extends Controller
         $alumnosFuera = Alumno::whereNOTIn('codigoGrupo', [$grupo])->get();
         return view('alumnos.grupo',['alumnos'=> $alumnosClase, 'modo' => 'ver', 'grupo' => $grupo, 'alumnosFuera' => $alumnosFuera]);
      }
+
+     public function buscarAlumno(Request $request) {
+       $id = $request->input('id');
+
+       $resultados = Alumno::where('id', '=', $id)->get();
+       return view('alumnos.search', compact('resultados'));
+     }
 }

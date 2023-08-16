@@ -37,10 +37,14 @@ Route::group(['middleware' => 'auth'], function() {
         return view('index');
     })->name('home');
 });
-Route::get("/alumnos", function() {
-    return view('alumnos.index');
-});
+Route::get("/alumnos/search", function() {
+    return view('alumnos.search');
+})->name('alumnos.search');
+
+Route::get('/alumnos/searchAlumno', [AlumnoController::class, 'buscarAlumno']);
+
 Route::resource('alumnos', AlumnoController::class)->middleware('auth');
+
 Route::resource('grupos-clases', GrupoController::class)->middleware('auth');
 Route::get('/grupos-clases/grupos/{grupo}/mostrar-alumnos', [GrupoController::class, 'mostrarAlumnos'])->name('grupos.mostrar-alumnos')->middleware('auth');
 

@@ -61,7 +61,7 @@
                         <li class="nav-item">
                             <a class="nav-link"href="{{ url('/empleados') }}">Gestionar Horarios</a>
                         </li>
-                        <li class="nav-item">
+                        <li cla ss="nav-item">
                             <a class="nav-link"href="{{ url('/grupos-clases') }}">Gestionar Clases y Grupos</a>
                         </li>
 
