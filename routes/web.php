@@ -16,17 +16,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Para que si ponemos la ruta principal haya que iniciar sesion en la pagina
 Route::get('/', function () {
     return view('auth.login');
 });
 
+
+//Cuando escribamos en la url empleados nos redirige a la vista index de empleados
 Route::get("/empleados", function() {
     return view('empleados.index');
 });
 
+
+//Obtenemos automaticamente las rutas asociadas a empleados
 Route::resource('empleados', EmpleadoController::class)->middleware('auth');
+
+//Hacemos que desaparezca el boton de registro de usuario y de restablecer la contraseña
 Auth::routes(['register'=>false, 'reset' => false]);
 
+
+//Hacemos que se redirija al index global cuando se inicie sesion
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', function(){
         return view('index');
@@ -37,14 +46,22 @@ Route::group(['middleware' => 'auth'], function() {
         return view('index');
     })->name('home');
 });
+
+
+//Asignando ruta para la busqueda de alumno
 Route::get("/alumnos/search", function() {
     return view('alumnos.search');
 })->name('alumnos.search');
 
+//Para acceder a la funcion asociada a buscar el alumno
 Route::get('/alumnos/searchAlumno', [AlumnoController::class, 'buscarAlumno']);
 
+
+//Para asociar todas las rutas de alumnos
 Route::resource('alumnos', AlumnoController::class)->middleware('auth');
 
+
+//Para asociar todas las rutas de grupos
 Route::resource('grupos-clases', GrupoController::class)->middleware('auth');
 Route::get('/grupos-clases/grupos/{grupo}/mostrar-alumnos', [GrupoController::class, 'mostrarAlumnos'])->name('grupos.mostrar-alumnos')->middleware('auth');
 
@@ -54,3 +71,8 @@ Route::get("/grupos-clases/grupos/{grupo}/asignar-alumnos", [GrupoController::cl
 
 
 Route::resource('grupos-clases/clases', AlumnoController::class);
+
+//Redireccionar a la vista de horarios
+Route::get('/horarios', function() {
+    return view('horarios');
+});

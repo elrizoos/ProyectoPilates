@@ -155,4 +155,8 @@ class AlumnoController extends Controller
        $resultados = Alumno::where('id', '=', $id)->get();
        return view('alumnos.search', compact('resultados'));
      }
+
+     public function borrarAlumno(Request $request) {
+        $id = $request->input('id');
+     }
 }
