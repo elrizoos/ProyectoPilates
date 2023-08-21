@@ -7,7 +7,7 @@
     <title>Document</title>
 </head>
 <body>
-    @extends('layouts.app', ['modo' => 'grupo'])
+    @extends('layouts.app', ['modo' => 'Horario'])
 
     @section('content')
         <div class="container">
@@ -25,7 +25,9 @@
                                 <th>Viernes</th>
                                 <th>Sábado</th>
                                 <th>Domingo</th>
-                                
+                            <?php
+                                echo "hola" . $hols 
+                            ?>  
 
                             </tr>
                         </thead>
@@ -102,6 +104,7 @@
                             </tr>
                         </tbody>
                     </table>
+                    
                 </div>
             </div>
         </div>

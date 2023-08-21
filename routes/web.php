@@ -3,6 +3,8 @@
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\GrupoController;
+
+use App\Http\Controllers\ClaseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,6 +49,19 @@ Route::group(['middleware' => 'auth'], function() {
     })->name('home');
 });
 
+Route::resource('alumnos', AlumnoController::class)->middleware('auth');
+
+Route::resource('grupos-clases/clases', ClaseController::class)->middleware('auth');
+
+Route::resource('grupos-clases/grupos', GrupoController::class)->middleware('auth');
+
+Route::resource('grupos-clases', GrupoController::class)->middleware('auth');
+
+Route::get('/grupos-clases/grupos/{grupo}/mostrar-alumnos', [GrupoController::class, 'mostrarAlumnos'])->name('grupos.mostrar-alumnos')->middleware('auth');
+
+Route::get('horarios', function() {
+    return view('horarios');
+}); 
 
 //Asignando ruta para la busqueda de alumno
 Route::get("/alumnos/search", function() {
@@ -54,7 +69,7 @@ Route::get("/alumnos/search", function() {
 })->name('alumnos.search');
 
 //Para acceder a la funcion asociada a buscar el alumno
-Route::get('/alumnos/searchAlumno', [AlumnoController::class, 'buscarAlumno']);
+/** Route::get('/alumnos/searchAlumno', [AlumnoController::class, 'buscarAlumno']);
 
 
 //Para asociar todas las rutas de alumnos
@@ -62,11 +77,11 @@ Route::resource('alumnos', AlumnoController::class)->middleware('auth');
 
 
 //Para asociar todas las rutas de grupos
-Route::resource('grupos-clases', GrupoController::class)->middleware('auth');
-Route::get('/grupos-clases/grupos/{grupo}/mostrar-alumnos', [GrupoController::class, 'mostrarAlumnos'])->name('grupos.mostrar-alumnos')->middleware('auth');
 
+Route::get('/grupos-clases/grupos/{grupo}/mostrar-alumnos', [GrupoController::class, 'mostrarAlumnos'])->name('grupos.mostrar-alumnos')->middleware('auth');
 Route::get('/alumnos/{grupo}/mostrar-alumnos', [AlumnoController::class, 'mostrarAlumnos'])->name('alumnos.mostrar-alumnos')->middleware('auth');
 Route::get("/grupos-clases/grupos/{grupo}/asignar-alumnos", [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar-alumnos')->middleware('auth');
+Route::get("/grupos-clases/grupos/{grupo}/edit", [GrupoController::class, 'edit'])->name('grupos.edit')->middleware('auth');
 
 
 
@@ -75,4 +90,4 @@ Route::resource('grupos-clases/clases', AlumnoController::class);
 //Redireccionar a la vista de horarios
 Route::get('/horarios', function() {
     return view('horarios');
-});
+});*/

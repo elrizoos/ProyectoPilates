@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Alumno;
 use App\Models\Clase;
 
-class GrupoController extends Controller
+class ClaseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -57,7 +57,10 @@ class GrupoController extends Controller
      */
     public function update(Request $request, Grupo $grupo)
     {
-        //
+        $campos = [
+            'nombre' => 'required|string|max:100',
+            
+        ]
     }
 
     /**
