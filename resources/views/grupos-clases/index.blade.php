@@ -70,7 +70,7 @@
             <div class="row">
                 <div class="col col-12">
                     <h3>Clases</h3>
-                    <a href="{{ url('clases/create') }}" class="btn btn-success">Crear nuevo grupo</a>
+                    <a href="{{ url('grupos-clases/clases/create') }}" class="btn btn-success">Crear nueva clase</a>
                     <br><br>
                     <table class="table text-center align-middle table-striped-columns table-responsive fs-6"
                         style="position: absolute;left:5%; width:90%">
@@ -91,7 +91,7 @@
                                     <td>{{ $clase->nivel }}</td>
 
 
-                                    <td><a href=" {{ url('/clases/' . $clase->id . '/edit') }}"
+                                    <td><a href=" {{ url('/grupos-clases/clases/' . $clase->id . '/edit') }}"
                                             class="btn btn-warning d-inline-block">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
                                                 fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -101,7 +101,7 @@
                                                     d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
                                             </svg></a>
 
-                                        <form action="{{ url('/clases/' . $clase->id) }}" method="post"
+                                        <form action="{{ url('/grupos-clases/clases/' . $clase->id) }}" method="post"
                                             class="d-inline-block">
                                             @csrf
                                             {{ method_field('DELETE') }}

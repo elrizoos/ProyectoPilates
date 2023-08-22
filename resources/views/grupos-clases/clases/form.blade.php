@@ -19,15 +19,11 @@
                id="nombre"value="{{ isset($clase->nombre) ? $clase->nombre : old('nombre') }}">
        </div>
        <div class="form-group">
-           <label for="nombre">Maximo Participantes: </label>
-           <input class="form-control" type="text" name="maxParticipantes"
-               id="maxParticipantes"value="{{ isset($clase->maxParticipantes) ? $clase->maxParticipantes : old('maxParticipantes') }}">
+           <label for="nivel">Nivel </label>
+           <input class="form-control" type="text" name="nivel"
+               id="nivel"value="{{ isset($clase->nivel) ? $clase->nivel : old('nivel') }}">
        </div>
-       <div class="form-group">
-           <label for="nombre">codigoClase: </label>
-           <input class="form-control" type="text" name="codigoClase"
-               id="codigoClase"value="{{ isset($clase->codigoClase) ? $clase->codigoClase : old('codigoClase') }}">
-       </div>
+      
        
        <div class="form-group">
            <input class="btn btn-success" type="submit" value="{{ $modo }} datos clase">

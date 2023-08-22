@@ -32,8 +32,9 @@ class ClaseController extends Controller
      */
     public function store(Request $request)
     {
-        $datosGrupo = request()->except('_token');
-        Grupo::insert($datosGrupo);
+        $datosClase = request()->except('_token');
+        Clase::insert($datosClase);
+        return redirect('grupos-clases/clases')->with('mensaje', 'clase agregada con exito');
     }
 
     /**
@@ -49,23 +50,39 @@ class ClaseController extends Controller
      */
     public function edit($id)
     {
-        $grupo = Grupo::findOrFail($id);
-        return view('grupos-clases.clases.edit', compact('grupo'));    }
+        $clase = Clase::findOrFail($id);
+        return view('grupos-clases.clases.edit', compact('clase'));    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Grupo $grupo)
+    public function update(Request $request, $id)
     {
-        
+        $campos = [
+            'nombre' => 'required|string|max:100',
+            'nivel' => 'required|integer|max:2'
+
+        ];
+
+        $mensaje = ['required' => 'El :attribute es obligatorio'];
+
+        $this->validate($request, $campos, $mensaje);
+
+        $datosClase = request()->except(['_token', '_method']);
+
+        Clase::where('id','=', $id)->update($datosClase);
+
+        $clase = Clase::findOrFail($id);
+        return view('grupos-clases.clases.edit', compact('clase'));
     }
 
     /**
      * Remove the specified resource from storage.
      */ 
-    public function destroy(Grupo $grupo)
+    public function destroy($id)
     {
-        //
+        Clase::destroy($id);
+        return redirect('grupos-clases/clases')->with('mensaje', 'clase borrada correctamente');
     }
 
     /**
