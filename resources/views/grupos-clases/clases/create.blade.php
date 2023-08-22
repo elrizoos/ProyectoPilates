@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Gestor de Gruposs - Chus-Álvarez-Pilates</title>
+    <title>Gestor de Clases - Chus-Álvarez-Pilates</title>
 </head>
 
 <body>
@@ -13,10 +13,10 @@
 
     @section('content')
         <div class="container">
-            <form class="row" action="{{ url('/grupos') }}" method="POST" enctype="multipart/form-data">
+            <form class="row" action="{{ url('/grupos-clases/clases') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                @include('grupos.form', ['modo' => 'Crear'])
+                @include('grupos-clases.clases.form', ['modo' => 'Crear'])
             </form>
         </div>
     @endsection

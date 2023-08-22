@@ -35,6 +35,7 @@ class GrupoController extends Controller
     {
         $datosGrupo = request()->except('_token');
         Grupo::insert($datosGrupo);
+        return redirect('grupos-clases/grupos')->with('mensaje', 'grupo agregado con exito');
     }
 
     /**
@@ -56,17 +57,35 @@ class GrupoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Grupo $grupo)
+    public function update(Request $request, $id)
     {
-        //
+        $campos = [
+            'nombre' => 'required|string|max:100', 
+            'maxParticipantes' => 'required|string|max:3',
+            'codigoClase' => 'required|integer|max:10',
+        ];
+
+        $mensaje = [
+            'required' => 'El :attribute es obligatorio'
+        ];
+
+        $this->validate($request, $campos, $mensaje);
+
+        $datosGrupo = request()->except(['_token', '_method']);
+
+        Grupo::where('id','=',$id)->update($datosGrupo);
+
+        $grupo = Grupo::findOrFail($id);
+        return view('grupos-clases.grupos.edit', compact('grupo'));
     }
 
     /**
      * Remove the specified resource from storage.
      */ 
-    public function destroy(Grupo $grupo)
+    public function destroy($id)
     {
-        //
+        Grupo::destroy($id);
+        return redirect('grupos-clases/grupos')->with('mensaje', 'grupo borrado correctamente');
     }
 
     /**

@@ -32,5 +32,5 @@
        <div class="form-group">
            <input class="btn btn-success" type="submit" value="{{ $modo }} datos grupo">
 
-           <a class="btn btn-primary" href="{{ url('grupos/') }}">Regresar</a>
+           <a class="btn btn-primary" href="{{ url('grupos-clases/grupos/') }}">Regresar</a>
        </div>

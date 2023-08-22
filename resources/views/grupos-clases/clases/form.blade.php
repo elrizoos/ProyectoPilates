@@ -1,4 +1,4 @@
-       <h1>{{ $modo }} grupo</h1>
+       <h1>{{ $modo }} clase</h1>
 
        {{-- Para poder mostrar los mensajes de error --}}
 
@@ -16,21 +16,21 @@
        <div class="form-group">
            <label for="nombre">Nombre: </label>
            <input class="form-control" type="text" name="nombre"
-               id="nombre"value="{{ isset($grupo->nombre) ? $grupo->nombre : old('nombre') }}">
+               id="nombre"value="{{ isset($clase->nombre) ? $clase->nombre : old('nombre') }}">
        </div>
        <div class="form-group">
            <label for="nombre">Maximo Participantes: </label>
            <input class="form-control" type="text" name="maxParticipantes"
-               id="maxParticipantes"value="{{ isset($grupo->maxParticipantes) ? $grupo->maxParticipantes : old('maxParticipantes') }}">
+               id="maxParticipantes"value="{{ isset($clase->maxParticipantes) ? $clase->maxParticipantes : old('maxParticipantes') }}">
        </div>
        <div class="form-group">
            <label for="nombre">codigoClase: </label>
            <input class="form-control" type="text" name="codigoClase"
-               id="codigoClase"value="{{ isset($grupo->codigoClase) ? $grupo->codigoClase : old('codigoClase') }}">
+               id="codigoClase"value="{{ isset($clase->codigoClase) ? $clase->codigoClase : old('codigoClase') }}">
        </div>
        
        <div class="form-group">
-           <input class="btn btn-success" type="submit" value="{{ $modo }} datos grupo">
+           <input class="btn btn-success" type="submit" value="{{ $modo }} datos clase">
 
-           <a class="btn btn-primary" href="{{ url('grupos/') }}">Regresar</a>
+           <a class="btn btn-primary" href="{{ url('grupos-clases/clases/') }}">Regresar</a>
        </div>

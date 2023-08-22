@@ -13,10 +13,10 @@
 
     @section('content')
         <div class="container">
-            <form class="row" action="{{ url('/grupos') }}" method="POST" enctype="multipart/form-data">
+            <form class="row" action="{{ url('/grupos-clases/grupos') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                @include('grupos.form', ['modo' => 'Crear'])
+                @include('grupos-clases.grupos.form', ['modo' => 'Crear'])
             </form>
         </div>
     @endsection

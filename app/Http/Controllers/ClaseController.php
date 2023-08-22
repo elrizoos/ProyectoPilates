@@ -57,10 +57,7 @@ class ClaseController extends Controller
      */
     public function update(Request $request, Grupo $grupo)
     {
-        $campos = [
-            'nombre' => 'required|string|max:100',
-            
-        ]
+        
     }
 
     /**
