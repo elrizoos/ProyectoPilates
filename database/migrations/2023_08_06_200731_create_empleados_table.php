@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('apellidos');
             $table->string('dni');
-            $table->integer('telefono');
+            $table->string('telefono', 25);
             $table->string('email');
             $table->date('fechaNacimiento');
             $table->string('direccion');

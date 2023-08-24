@@ -48,7 +48,7 @@
                             <td>{{ $empleado->email }}</td>
                             <td>{{ $empleado->fechaNacimiento }}</td>
                             <td>{{ $empleado->direccion }}</td>
-                            <td>{{ $empleado->codigoClase }}</td>
+                            <td>{{ $empleado->clase }}</td>
                             <td><a href=" {{ url('/empleados/' . $empleado->id . '/edit') }}"
                                     class="btn btn-warning d-inline-block">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
@@ -70,6 +70,7 @@
                         </tr>
                     @endforeach
                 </tbody>
+                {{ $empleados->links('pagination::bootstrap-4') }}
             </table>
         </div>
     @endsection
