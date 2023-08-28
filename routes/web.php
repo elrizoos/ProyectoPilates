@@ -5,6 +5,7 @@ use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\GrupoController;
 
 use App\Http\Controllers\ClaseController;
+use App\Http\Controllers\HorarioController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,7 +35,7 @@ Route::get("/empleados", function() {
 Route::resource('empleados', EmpleadoController::class)->middleware('auth');
 
 //Hacemos que desaparezca el boton de registro de usuario y de restablecer la contraseña
-Auth::routes(['register'=>false, 'reset' => false]);
+Auth::routes(['register'=>true, 'reset' => false]);
 
 
 //Hacemos que se redirija al index global cuando se inicie sesion
@@ -57,15 +58,15 @@ Route::resource('grupos-clases/grupos', GrupoController::class)->middleware('aut
 
 Route::resource('grupos-clases', GrupoController::class)->middleware('auth');
 
+Route::resource('horarios', HorarioController::class)->middleware('auth');
+
 Route::get('/grupos-clases/grupos/{grupo}/mostrar-alumnos', [GrupoController::class, 'mostrarAlumnos'])->name('grupos.mostrar-alumnos')->middleware('auth');
 
 Route::get('/alumnos/{grupo}/mostrar-alumnos', [AlumnoController::class, 'mostrarAlumnos'])->name('alumnos.mostrar-alumnos')->middleware('auth');
 
 Route::get("/grupos-clases/grupos/{grupo}/asignar-alumnos", [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar-alumnos')->middleware('auth');
 
-Route::get('horarios', function() {
-    return view('horarios');
-}); 
+
 
 //Asignando ruta para la busqueda de alumno
 Route::get("/alumnos/search", function() {

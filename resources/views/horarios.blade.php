@@ -25,9 +25,7 @@
                                 <th>Viernes</th>
                                 <th>Sábado</th>
                                 <th>Domingo</th>
-                            <?php
-                                echo "hola" . $hols 
-                            ?>  
+                              
 
                             </tr>
                         </thead>

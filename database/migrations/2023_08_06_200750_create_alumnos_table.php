@@ -16,13 +16,13 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('apellidos');
             $table->string('dni');
-            $table->integer('telefono');
+            $table->string('telefono', 25);
             $table->string('email');
             $table->date('fechaNacimiento');
             $table->string('direccion');
-            $table->unsignedBigInteger('grupo');
+            $table->unsignedBigInteger('codigoGrupo');
             $table->string('foto');
-            $table->foreign('grupo')->references('id')->on('grupos');
+            $table->foreign('codigoGrupo')->references('id')->on('grupos');
             $table->timestamps();
         });
     }

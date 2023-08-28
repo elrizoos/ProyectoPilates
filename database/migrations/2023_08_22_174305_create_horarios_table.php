@@ -17,9 +17,11 @@ return new class extends Migration
             $table->unsignedBigInteger('codigoGrupo');
             $table->unsignedBigInteger('codigoEmpleado');
             $table->string('diaSemana');
-            $table->datetime('horaInicio');
-            $table->datetime('horaFin');
-            $table->date('fechaExclusiva');
+            $table->time('horaInicio');
+            $table->time('horaFin');
+            $table->date('primerDia');
+            $table->boolean('repetir');
+            $table->smallInteger('repeticiones');
             $table->foreign('codigoClase')->references('id')->on('clases');
             $table->foreign('codigoGrupo')->references('id')->on('grupos');
             $table->foreign('codigoEmpleado')->references('id')->on('empleados');

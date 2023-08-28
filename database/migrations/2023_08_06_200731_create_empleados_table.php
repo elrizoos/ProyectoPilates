@@ -20,9 +20,9 @@ return new class extends Migration
             $table->string('email');
             $table->date('fechaNacimiento');
             $table->string('direccion');
-            $table->unsignedBigInteger('clase');
+            $table->unsignedBigInteger('codigoClase');
             $table->string('foto');
-            $table->foreign('clase')->references('id')->on('clases');
+            $table->foreign('codigoClase')->references('id')->on('clases');
             $table->timestamps();
         });
     }

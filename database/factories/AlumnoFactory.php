@@ -2,22 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\Empleado;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Empleado>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Alumno>
  */
-class EmpleadoFactory extends Factory
+class AlumnoFactory extends Factory
 {
     /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
      */
-
-     protected $model = Empleado::class;
-
     public function definition(): array
     {
         return [
@@ -28,8 +24,8 @@ class EmpleadoFactory extends Factory
             'email' => $this->faker->unique()->safeEmail,
             'fechaNacimiento' => $this->faker->dateTime,
             'direccion' => $this->faker->address,
-            'codigoClase' => '1',
-            'foto' =>$this->faker->imageUrl(640, 480, 'people'),
+            'codigoGrupo' => '1',
+            'foto' => $this->faker->imageUrl(640, 480, 'people'),
         ];
     }
 }
