@@ -44,15 +44,33 @@
                <option value="Viernes">Viernes</option>
            </select>
        </div>
+
+       <!-- Tramos horarios establecidos:
+            Tramo 1: 10:00 --- 11:20
+            Tramo 2: 11:30 --- 12:50
+            Tramo 3: 13:00 --- 14:20
+            Tramo 4: 15:00 --- 16:20
+            Tramo 5: 16:30 --- 17:50
+            Tramo 6: 18:00 --- 19:20
+            Tramo 7: 19:30 --- 20:50
+
+       -->
        <div class="form-group">
-           <label for="horaInicio">Hora de inicio:</label>
-           <input type="time" id="horaInicio" name="horaInicio" required>
-       </div>
-       <div class="form-group">
-           <label for="horaFin">Hora de finalizacion:</label>
-           <input type="time" id="horaFin" name="horaFin" required>
+           <select name="tramoHorario" id="tramoHorario">
+            <option value="default">Elige un tramo horario</option>
+                <option value="tramo1">10:00 --- 11:20</option>
+                <option value="tramo2">11:30 --- 12:50</option>
+                <option value="tramo3">13:00 --- 14:20</option>
+                <option value="tramo4">15:00 --- 16:20</option>
+                <option value="tramo5">16:30 --- 17:50</option>
+                <option value="tramo6">18:00 --- 19:20</option>
+                <option value="tramo7">19:30 --- 20:50</option>
+           </select>
        </div>
 
+       <input type="hidden" name="horaInicio" id="horaInicio">
+       <input type="hidden" name="horaFin" id="horaFin">
+       
        <div class="form-group">
            <label for="primerDia">Primer día:</label>
            <input type="date" id="primerDia" name="primerDia" required>

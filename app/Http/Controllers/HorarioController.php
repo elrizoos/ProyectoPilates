@@ -8,6 +8,7 @@ use App\Models\Empleado;
 use App\Models\Grupo;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use PhpParser\Comment;
 
 class HorarioController extends Controller
 {
@@ -64,13 +65,35 @@ class HorarioController extends Controller
      */
     public function store(Request $request)
     {
+        echo 'tramo: ' . request()->tramoHorario;
+
+        /** Tramos horarios establecidos:
+            Tramo 1: 10:00 --- 11:20
+            Tramo 2: 11:30 --- 12:50
+            Tramo 3: 13:00 --- 14:20
+            Tramo 4: 15:00 --- 16:20
+            Tramo 5: 16:30 --- 17:50
+            Tramo 6: 18:00 --- 19:20
+            Tramo 7: 19:30 --- 20:50
+
+     */
+        $tramosHorarios = [
+            'tramo1',
+            'tramo2',
+            'tramo3',
+            'tramo4',
+            'tramo5',
+            'tramo6',
+            'tramo7',
+        ];
+
         $campos = [
             'codigoClase' => 'required|integer|max:3',
             'codigoEmpleado' => 'required|integer|max:3',
             'codigoGrupo' => 'required|integer|max:3',
             'diaSemana' => 'required|in:Lunes,Martes,Miércoles,Jueves,Viernes',
-            'horaInicio' => 'required|date_format:H:i',
-            'horaFin' => 'required|date_format:H:i',
+            'horaInicio' => 'required|in:'. implode(',',$tramosHorarios),
+            'horaFin' => 'required|in:' . implode(',', $tramosHorarios),
             'primerDia' =>  'required|date',
             'repetir' => 'required|boolean',
         ];
