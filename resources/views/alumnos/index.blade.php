@@ -68,6 +68,7 @@
                         </tr>
                     @endforeach
                 </tbody>
+                {{ $alumnos->links('pagination::bootstrap-4') }}
             </table>
         </div>
     @endsection

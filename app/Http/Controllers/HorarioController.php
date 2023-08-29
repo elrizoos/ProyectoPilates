@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Horario;
+use App\Models\Clase;
+use App\Models\Empleado;
+use App\Models\Grupo;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -37,9 +40,9 @@ class HorarioController extends Controller
             echo "<br>" . $startOfWeek;
             echo "<br>" . $endOfWeek;
             // Filtrar tus datos basados en la fecha de inicio y fin de la semana
-            $horarios = Horario::with('clase')->whereBetween('primerDia', [$startOfWeek, $endOfWeek])->get();
+            $horarios = Horario::with('clase')->whereBetween('primerDia', [$startOfWeek, $endOfWeek])->orderBy('primerDia', 'asc')->orderBy('horaInicio', 'asc')->paginate(10)->withQueryString();
         } else {
-            $horarios = Horario::all(); // o cualquier lógica predeterminada que desees
+            $horarios = Horario::orderBy('primerDia', 'asc')->orderBy('horaInicio', 'asc')->paginate(10); // o cualquier lógica predeterminada que desees
         }
 
         return view('horarios.index', compact('horarios'));
@@ -50,7 +53,10 @@ class HorarioController extends Controller
      */
     public function create()
     {
-        //
+        $clases = Clase::all();
+    $empleados = Empleado::all();
+    $grupos = Grupo::all();
+        return view('horarios.create', compact('clases', 'empleados', 'grupos'));
     }
 
     /**
@@ -58,7 +64,28 @@ class HorarioController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $campos = [
+            'codigoClase' => 'required|integer|max:3',
+            'codigoEmpleado' => 'required|integer|max:3',
+            'codigoGrupo' => 'required|integer|max:3',
+            'diaSemana' => 'required|in:Lunes,Martes,Miércoles,Jueves,Viernes',
+            'horaInicio' => 'required|date_format:H:i',
+            'horaFin' => 'required|date_format:H:i',
+            'primerDia' =>  'required|date',
+            'repetir' => 'required|boolean',
+        ];
+
+        $mensaje = [
+            'required' => 'El :attribute es obligatorio',
+            
+        ];
+
+        $this->validate($request, $campos, $mensaje);
+        $datosHorario = request()->except('_token');
+
+        Horario::insert($datosHorario);
+
+        return redirect('horarios')->with('mensaje', 'El registro del horario de la clase ha sido agregado con éxito');
     }
 
     /**

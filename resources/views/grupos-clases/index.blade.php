@@ -64,6 +64,7 @@
                                     </tr>
                                 @endforeach
                             </tbody>
+                            {{ $grupos->appends(['page-grupos' => $grupos->currentPage()])->links('pagination::bootstrap-4') }}
                         </table>
                 </div>
             </div>
@@ -112,6 +113,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
+                        {{ $clases->appends(['page-clases' => $clases->currentPage()])->links('pagination::bootstrap-4') }}
                     </table>
                 </div>
             </div>
