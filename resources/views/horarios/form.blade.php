@@ -35,14 +35,15 @@
            @endforeach
        </select>
        <div class="form-group">
-           <label for="diaSemana">Día de la semana:</label>
-           <select name="diaSemana" id="diaSemana" required>
+           <label for="diaSemana0">Día de la semana:</label>
+           <select name="diaSemana[]" id="diaSemana0" required>
                <option value="Lunes">Lunes</option>
                <option value="Martes">Martes</option>
                <option value="Miércoles">Miércoles</option>
                <option value="Jueves">Jueves</option>
                <option value="Viernes">Viernes</option>
            </select>
+           <button type="button" id="agregarDia">+</button>
        </div>
 
        <!-- Tramos horarios establecidos:
@@ -57,20 +58,20 @@
        -->
        <div class="form-group">
            <select name="tramoHorario" id="tramoHorario">
-            <option value="default">Elige un tramo horario</option>
-                <option value="tramo1">10:00 --- 11:20</option>
-                <option value="tramo2">11:30 --- 12:50</option>
-                <option value="tramo3">13:00 --- 14:20</option>
-                <option value="tramo4">15:00 --- 16:20</option>
-                <option value="tramo5">16:30 --- 17:50</option>
-                <option value="tramo6">18:00 --- 19:20</option>
-                <option value="tramo7">19:30 --- 20:50</option>
+               <option value="default">Elige un tramo horario</option>
+               <option value="10:00 --- 11:20">10:00 --- 11:20</option>
+               <option value="11:30 --- 12:50">11:30 --- 12:50</option>
+               <option value="13:00 --- 14:20">13:00 --- 14:20</option>
+               <option value="15:00 --- 16:20">15:00 --- 16:20</option>
+               <option value="16:30 --- 17:50">16:30 --- 17:50</option>
+               <option value="18:00 --- 19:20">18:00 --- 19:20</option>
+               <option value="19:30 --- 20:50">19:30 --- 20:50</option>
            </select>
        </div>
 
        <input type="hidden" name="horaInicio" id="horaInicio">
        <input type="hidden" name="horaFin" id="horaFin">
-       
+
        <div class="form-group">
            <label for="primerDia">Primer día:</label>
            <input type="date" id="primerDia" name="primerDia" required>

@@ -9,6 +9,7 @@ use App\Models\Grupo;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use PhpParser\Comment;
+use DateTime;
 
 class HorarioController extends Controller
 {
@@ -17,11 +18,10 @@ class HorarioController extends Controller
      */
     public function index(Request $request)
     {
-
         Carbon::setWeekStartsAt(Carbon::MONDAY);
         Carbon::setWeekEndsAt(Carbon::SUNDAY);
+
         $semana = $request->get('semana');
-        echo $semana;
 
         if ($semana) {
             // Extraer el número de semana y el año del valor enviado
@@ -29,25 +29,37 @@ class HorarioController extends Controller
 
             $year = $matches[1] ?? null;
             $weekNumber = $matches[2] ?? null;
-            echo "<br>" . $weekNumber;
-            echo "<br>" . $year;
-            // Usar Carbon para determinar la fecha de inicio y fin de la semana
 
+            // Usar Carbon para determinar la fecha de inicio y fin de la semana
             $startOfWeek = Carbon::parse("{$year}-W{$weekNumber}-1"); // Lunes de esa semana
             $endOfWeek = Carbon::parse("{$year}-W{$weekNumber}-7"); // Domingo de esa semana
 
-
-
-            echo "<br>" . $startOfWeek;
-            echo "<br>" . $endOfWeek;
             // Filtrar tus datos basados en la fecha de inicio y fin de la semana
-            $horarios = Horario::with('clase')->whereBetween('primerDia', [$startOfWeek, $endOfWeek])->orderBy('primerDia', 'asc')->orderBy('horaInicio', 'asc')->paginate(10)->withQueryString();
+            $horarios = Horario::with('clase')
+                ->whereBetween('primerDia', [$startOfWeek, $endOfWeek])
+                ->orderBy('primerDia', 'asc')
+                ->orderBy('horaInicio', 'asc')
+                ->get();
+
         } else {
-            $horarios = Horario::orderBy('primerDia', 'asc')->orderBy('horaInicio', 'asc')->paginate(10); // o cualquier lógica predeterminada que desees
+            //Esto nos permite recibir una fecha de la semana seleccionada
+            $date = $request->input('date', Carbon::now()->toDateString());
+            $currentDate = Carbon::parse($date);
+
+            $startOfWeek = $currentDate->startOfWeek();
+            $endOfWeek = $currentDate->endOfWeek();
+
+            $horarios = Horario::whereBetween('primerDia', [$startOfWeek, $endOfWeek])->get();
+
+            return view('horarios.index', [
+                'horarios' => $horarios,
+                'currentDate' => $currentDate,
+            ]);
         }
 
         return view('horarios.index', compact('horarios'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -55,8 +67,8 @@ class HorarioController extends Controller
     public function create()
     {
         $clases = Clase::all();
-    $empleados = Empleado::all();
-    $grupos = Grupo::all();
+        $empleados = Empleado::all();
+        $grupos = Grupo::all();
         return view('horarios.create', compact('clases', 'empleados', 'grupos'));
     }
 
@@ -65,50 +77,119 @@ class HorarioController extends Controller
      */
     public function store(Request $request)
     {
-        echo 'tramo: ' . request()->tramoHorario;
+        try {
 
-        /** Tramos horarios establecidos:
-            Tramo 1: 10:00 --- 11:20
-            Tramo 2: 11:30 --- 12:50
-            Tramo 3: 13:00 --- 14:20
-            Tramo 4: 15:00 --- 16:20
-            Tramo 5: 16:30 --- 17:50
-            Tramo 6: 18:00 --- 19:20
-            Tramo 7: 19:30 --- 20:50
+            echo 'tramo: ' . request()->tramoHorario;
 
-     */
-        $tramosHorarios = [
-            'tramo1',
-            'tramo2',
-            'tramo3',
-            'tramo4',
-            'tramo5',
-            'tramo6',
-            'tramo7',
-        ];
+            /** Tramos horarios establecidos:
+                Tramo 1: 10:00 --- 11:20
+                Tramo 2: 11:30 --- 12:50
+                Tramo 3: 13:00 --- 14:20
+                Tramo 4: 15:00 --- 16:20
+                Tramo 5: 16:30 --- 17:50
+                Tramo 6: 18:00 --- 19:20
+                Tramo 7: 19:30 --- 20:50
 
-        $campos = [
-            'codigoClase' => 'required|integer|max:3',
-            'codigoEmpleado' => 'required|integer|max:3',
-            'codigoGrupo' => 'required|integer|max:3',
-            'diaSemana' => 'required|in:Lunes,Martes,Miércoles,Jueves,Viernes',
-            'horaInicio' => 'required|in:'. implode(',',$tramosHorarios),
-            'horaFin' => 'required|in:' . implode(',', $tramosHorarios),
-            'primerDia' =>  'required|date',
-            'repetir' => 'required|boolean',
-        ];
+         */
+            $tramosHorarios = [
+                '10:00',
+                '11:30',
+                '13:00',
+                '15:00',
+                '16:30',
+                '18:00',
+                '19:30',
+            ];
+            $tramosHorarios2 = [
+                '11:20',
+                '12:50',
+                '14:20',
+                '16:20',
+                '17:50',
+                '19:20',
+                '20:50',
+            ];
 
-        $mensaje = [
-            'required' => 'El :attribute es obligatorio',
-            
-        ];
 
-        $this->validate($request, $campos, $mensaje);
-        $datosHorario = request()->except('_token');
+            $campos = [
+                'codigoClase' => 'required|integer|max:3',
+                'codigoEmpleado' => 'required|integer|max:3',
+                'codigoGrupo' => 'required|integer|max:3',
+                'diaSemana.*' => 'required|in:Lunes,Martes,Miércoles,Jueves,Viernes',
+                'horaInicio' => 'required|in:' . implode(',', $tramosHorarios),
+                'horaFin' => 'required|in:' . implode(',', $tramosHorarios2),
+                'primerDia' => 'required|date',
+                'repetir' => 'required|boolean',
+                'repeticiones' => 'required|integer',
+            ];
 
-        Horario::insert($datosHorario);
+            $mensaje = [
+                'required' => 'El :attribute es obligatorio',
 
-        return redirect('horarios')->with('mensaje', 'El registro del horario de la clase ha sido agregado con éxito');
+            ];
+
+            if (strpos(request()->tramoHorario, ' --- ') === false) {
+                return back()->with('error', 'El tramo horario es inválido.');
+            }
+
+            $tramo = explode(' --- ', request()->tramoHorario);
+            $horaInicio = $tramo[0];
+            $horaFin = $tramo[1];
+
+            $this->validate($request, $campos, $mensaje);
+            // Datos básicos del horario sin incluir los días, token, ni repetición.
+            $datosHorarioBase = request()->except('_token', 'tramoHorario', 'diaSemana', 'repetir', 'repeticiones');
+            $datosHorarioBase['horaInicio'] = $horaInicio;
+            $datosHorarioBase['horaFin'] = $horaFin;
+            // Días seleccionados y número de repeticiones.
+            $diasSeleccionados = $request->input('diaSemana');
+            $repeticiones = $request->input('repeticiones') ?? 1; // Por defecto será 1 si no se especifica repeticiones.
+
+            // Para cada día seleccionado.
+            foreach ($diasSeleccionados as $dia) {
+                $daysConversion = [
+                    'Lunes' => 'Monday',
+                    'Martes' => 'Tuesday',
+                    'Miércoles' => 'Wednesday',
+                    'Jueves' => 'Thursday',
+                    'Viernes' => 'Friday',
+                    'Sábado' => 'Saturday',
+                    'Domingo' => 'Sunday'
+                ];
+
+                $diaInEnglish = $daysConversion[$dia];
+                // Establecer la fecha de inicio basado en el día seleccionado.
+                $fechaInicio = new DateTime($request->input('primerDia'));
+
+                // Este bucle asegura que la fecha de inicio coincide con el primer día de la semana seleccionado.
+                while ($fechaInicio->format('l') != $diaInEnglish) {
+                    $fechaInicio->modify('+1 day');
+                }
+
+                // Si se desea repetir, se guardan múltiples registros, si no, solo uno.
+
+                for ($i = 0; $i <= $repeticiones; $i++) {
+                    $datosHorario = $datosHorarioBase;
+                    $datosHorario['primerDia'] = $fechaInicio->format('Y-m-d');
+                    $datosHorario['diaSemana'] = $dia;
+
+                    // Aquí nos aseguramos de que las horas se redefinan correctamente.
+                    $datosHorario['horaInicio'] = $horaInicio;
+                    $datosHorario['horaFin'] = $horaFin;
+
+                    Horario::insert($datosHorario);
+
+                    $fechaInicio->modify('+7 day');
+                }
+
+
+            }
+            return redirect('horarios')->with('mensaje', 'El registro del horario de la clase ha sido agregado con éxito');
+
+        } catch (\Exception $e) {
+            echo "mensaje de error: " . $e->getMessage();
+           
+        }
     }
 
     /**

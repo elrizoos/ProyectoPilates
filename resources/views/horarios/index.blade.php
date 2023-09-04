@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+use Carbon\Carbon;
+
+?>
 
 <head>
     <meta charset="UTF-8">
@@ -9,60 +13,83 @@
 </head>
 
 <body>
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if (session('mensaje'))
+        <div class="alert alert-success">
+            {{ session('mensaje') }}
+        </div>
+    @endif
 
     @extends('layouts.app', ['modo' => 'Horarios'])
     @section('content')
         <div class="container">
-
+            <a href="{{ url('horarios/create') }}">Crear nuevo registro</a>
             <form action="{{ url('/horarios/') }}" method="GET">
                 <label for="semana">Selecciona la semana:</label>
-                <input type="week" name="semana" value="">
+                <input type="week" name="semana">
                 <button type="submit">Mostrar</button>
             </form>
-            <table class="table text-center align-middle table-striped-columns table-responsive fs-6"
-                style="position: absolute;left:5%; width:90%">
-                <thead class="thead-light">
+            @if(isset($currentDate))
+                <div class="navigation-buttons">
+                <a href="{{ url('/horarios?date=' .$currentDate->copy()->subWeek()->toDateString()) }}">Semana Anterior</a>
+                <span>Semana del {{ $currentDate->startOfWeek()->toFormattedDateString() }} al
+                    {{ $currentDate->endOfWeek()->toFormattedDateString() }}</span>
+                <a href="{{ url('/horarios?date=' .$currentDate->copy()->addWeek()->toDateString()) }}">Semana Posterior</a>
+            </div>
+            @endif
+            <h3>Semana seleccionada</h3>
+            <table>
+                <thead>
                     <tr>
-                        <th>Dia</th>
-                        <th>Horas</th>
-                        <th>Lunes</th>
-                        <th>Martes</th>
-                        <th>Miercoles</th>
-                        <th>Jueves</th>
-                        <th>Viernes</th>
-                        <th>Sábado</th>
-                        <th>Domingo</th>
+                        <th>Tramos Horarios</th>
+                        @foreach (['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'] as $dia)
+                            <th>
+                                {{ $dia }}<br>
+                                {{ $horarios->firstWhere('diaSemana', $dia)->primerDia ?? null ? $horarios->firstWhere('diaSemana', $dia)->primerDia : '---' }}
 
+
+                            </th>
+                        @endforeach
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($horarios as $horario)
+                    @foreach (['10:00 --- 11:20', '11:30 --- 12:50', '13:00 --- 14:20', '15:00 --- 16:20', '16:30 --- 17:50', '18:00 --- 19:20', '19:30 --- 20:50'] as $tramo)
                         <tr>
-                            <td>{{ $horario->primerDia }}</td>
-                            <td>{{ $horario->horaInicio }}/{{ $horario->horaFin }}</td>
-
-                            @foreach (['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as $dia)
+                            <td>{{ $tramo }}</td>
+                            @foreach (['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'] as $dia)
                                 <td>
-                                    @if ($horario->diaSemana === $dia)
-                                        {{ $horario->clase ? $horario->clase->nombre : 'Clase no encontrada' }}
-                                    @else
-                                        <!-- celda vacía -->
-                                        x
-                                    @endif
+                                    @php
+                                        
+                                        $matchedHorario = $horarios->first(function ($horario) use ($dia, $tramo) {
+                                            return $horario->diaSemana == $dia && substr($horario->horaInicio, 0, 5) . ' --- ' . substr($horario->horaFin, 0, 5) == $tramo;
+                                        });
+                                        if ($matchedHorario) {
+                                            echo $matchedHorario->codigoClase;
+                                        } else {
+                                            echo 'Horario no encontrado';
+                                        }
+                                    @endphp
+
+
                                 </td>
                             @endforeach
                         </tr>
                     @endforeach
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <th>#</th>
-                    </tr>
-                </tfoot>
-                {{ $horarios->links('pagination::bootstrap-4') }}
-            </table>
+
+
+            </table>{{$horarios}}
         </div>
     @endsection
 </body>
+
+
+
+
 
 </html>

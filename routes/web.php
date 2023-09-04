@@ -49,6 +49,13 @@ Route::group(['middleware' => 'auth'], function() {
         return view('index');
     })->name('home');
 });
+//Asignando ruta para la busqueda de alumno
+Route::get("/alumnos/search", function () {
+    return view('alumnos.search');
+})->name('alumnos.search')->middleware('auth');
+Route::get('/alumnos/searchAlumno', [AlumnoController::class, 'buscarAlumno']);
+
+
 
 Route::resource('alumnos', AlumnoController::class)->middleware('auth');
 
@@ -66,12 +73,6 @@ Route::get('/alumnos/{grupo}/mostrar-alumnos', [AlumnoController::class, 'mostra
 
 Route::get("/grupos-clases/grupos/{grupo}/asignar-alumnos", [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar-alumnos')->middleware('auth');
 
-
-
-//Asignando ruta para la busqueda de alumno
-Route::get("/alumnos/search", function() {
-    return view('alumnos.search');
-})->name('alumnos.search');
 
 //Para acceder a la funcion asociada a buscar el alumno
 /** Route::get('/alumnos/searchAlumno', [AlumnoController::class, 'buscarAlumno']);

@@ -9,7 +9,7 @@ class Horario extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['fecha'];
+    protected $fillable = ['codigoClase', 'codigoEmpleado', 'codigoGrupo', 'diaSemana', 'horaInicio', 'horaFin', 'primerDia', 'repetir', 'repeticiones'];
 
     public function obtenerCodigoClase()
     {
