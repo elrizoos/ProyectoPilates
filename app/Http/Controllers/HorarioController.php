@@ -21,35 +21,48 @@ class HorarioController extends Controller
         Carbon::setWeekStartsAt(Carbon::MONDAY);
         Carbon::setWeekEndsAt(Carbon::SUNDAY);
 
-        $semana = $request->get('semana');
+        //Recogemos el valor del input de la semana escogida
+        $semana = $request->input('semana');
+        $currentDate = Carbon::parse($semana);
+        if($semana) {
 
-        if ($semana) {
-            // Extraer el número de semana y el año del valor enviado
-            preg_match("/(\d+)-W(\d+)/", $semana, $matches);
+            // Para encontrar el inicio de la semana (Lunes)
+            $startOfWeek = date('Y-m-d', strtotime('monday this week', strtotime($semana)));
+            $endOfWeek = date('Y-m-d', strtotime('sunday this week', strtotime($semana)));
 
-            $year = $matches[1] ?? null;
-            $weekNumber = $matches[2] ?? null;
+            //Debug
+            //echo "Inicio de la semana: $startOfWeek";
+            //echo "Fin de la semana: $endOfWeek";
 
-            // Usar Carbon para determinar la fecha de inicio y fin de la semana
-            $startOfWeek = Carbon::parse("{$year}-W{$weekNumber}-1"); // Lunes de esa semana
-            $endOfWeek = Carbon::parse("{$year}-W{$weekNumber}-7"); // Domingo de esa semana
-
-            // Filtrar tus datos basados en la fecha de inicio y fin de la semana
             $horarios = Horario::with('clase')
                 ->whereBetween('primerDia', [$startOfWeek, $endOfWeek])
                 ->orderBy('primerDia', 'asc')
                 ->orderBy('horaInicio', 'asc')
                 ->get();
-
+            
+            //dd($horarios);
+            return view('horarios.index', [
+                'horarios' => $horarios,
+                'currentDate' => $currentDate,
+            ]);
         } else {
-            //Esto nos permite recibir una fecha de la semana seleccionada
+            // Tomamos la fecha del request o la fecha actual si no se provee ninguna
             $date = $request->input('date', Carbon::now()->toDateString());
             $currentDate = Carbon::parse($date);
 
-            $startOfWeek = $currentDate->startOfWeek();
-            $endOfWeek = $currentDate->endOfWeek();
+            $startOfWeek = clone $currentDate;
+            $startOfWeek->startOfWeek();
+            $endOfWeek = clone $currentDate;
+            $endOfWeek->endOfWeek();
 
-            $horarios = Horario::whereBetween('primerDia', [$startOfWeek, $endOfWeek])->get();
+            // Verifica las fechas antes de hacer la consulta
+            //dd($currentDate->toDateString(), $startOfWeek->toDateString(), $endOfWeek->toDateString());
+
+            $horarios = Horario::with('clase')
+                ->whereBetween('primerDia', [$startOfWeek, $endOfWeek])
+                ->orderBy('primerDia', 'asc')
+                ->orderBy('horaInicio', 'asc')
+                ->get();
 
             return view('horarios.index', [
                 'horarios' => $horarios,
@@ -57,21 +70,36 @@ class HorarioController extends Controller
             ]);
         }
 
-        return view('horarios.index', compact('horarios'));
+        
     }
+
+
+
 
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($dia, $tramo, $fecha)
     {
+        //Decodificar la variable tramo enviada por url
+        $tramo = urldecode($tramo);
+
+        //Agrupar las variables en un array
+        $datos = [
+            'dia' => $dia,
+            'tramo' => $tramo,
+            'fecha' => $fecha
+        ];
+
+
         $clases = Clase::all();
         $empleados = Empleado::all();
         $grupos = Grupo::all();
-        return view('horarios.create', compact('clases', 'empleados', 'grupos'));
+        return view('horarios.create', compact('clases', 'empleados', 'grupos', 'datos'));
     }
 
+   
     /**
      * Store a newly created resource in storage.
      */

@@ -34,25 +34,26 @@ use Carbon\Carbon;
                 <input type="week" name="semana">
                 <button type="submit">Mostrar</button>
             </form>
-            @if(isset($currentDate))
+            @if (isset($currentDate))
                 <div class="navigation-buttons">
-                <a href="{{ url('/horarios?date=' .$currentDate->copy()->subWeek()->toDateString()) }}">Semana Anterior</a>
-                <span>Semana del {{ $currentDate->startOfWeek()->toFormattedDateString() }} al
-                    {{ $currentDate->endOfWeek()->toFormattedDateString() }}</span>
-                <a href="{{ url('/horarios?date=' .$currentDate->copy()->addWeek()->toDateString()) }}">Semana Posterior</a>
-            </div>
+                    <a href="{{ url('/horarios?date=' .$currentDate->copy()->subWeek()->toDateString()) }}">Semana
+                        Anterior</a>
+                    <span>Semana del {{ $currentDate->startOfWeek()->toFormattedDateString() }} al
+                        {{ $currentDate->endOfWeek()->toFormattedDateString() }}</span>
+                    <a href="{{ url('/horarios?date=' .$currentDate->copy()->addWeek()->toDateString()) }}">Semana
+                        Posterior</a>
+                </div>
             @endif
             <h3>Semana seleccionada</h3>
-            <table>
+            <table class="table text-center align-middle table-striped-columns table-responsive fs-6"
+                style="left:5%; width:100%">
                 <thead>
                     <tr>
                         <th>Tramos Horarios</th>
-                        @foreach (['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'] as $dia)
+                        @foreach (['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'] as $index => $dia)
                             <th>
                                 {{ $dia }}<br>
-                                {{ $horarios->firstWhere('diaSemana', $dia)->primerDia ?? null ? $horarios->firstWhere('diaSemana', $dia)->primerDia : '---' }}
-
-
+                                {{ $currentDate->startOfWeek()->addDays($index)->format('Y-m-d') }}
                             </th>
                         @endforeach
                     </tr>
@@ -61,29 +62,33 @@ use Carbon\Carbon;
                     @foreach (['10:00 --- 11:20', '11:30 --- 12:50', '13:00 --- 14:20', '15:00 --- 16:20', '16:30 --- 17:50', '18:00 --- 19:20', '19:30 --- 20:50'] as $tramo)
                         <tr>
                             <td>{{ $tramo }}</td>
-                            @foreach (['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'] as $dia)
+                            @foreach (['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'] as $indexDia => $dia)
                                 <td>
                                     @php
-                                        
+                                        $fechaDia = $currentDate
+                                            ->copy()
+                                            ->startOfWeek()
+                                            ->addDays($indexDia)
+                                            ->format('Y-m-d');
                                         $matchedHorario = $horarios->first(function ($horario) use ($dia, $tramo) {
                                             return $horario->diaSemana == $dia && substr($horario->horaInicio, 0, 5) . ' --- ' . substr($horario->horaFin, 0, 5) == $tramo;
                                         });
-                                        if ($matchedHorario) {
-                                            echo $matchedHorario->codigoClase;
-                                        } else {
-                                            echo 'Horario no encontrado';
-                                        }
                                     @endphp
 
-
+                                    @if ($matchedHorario)
+                                        {{ $matchedHorario->codigoClase }}
+                                    @else
+                                        <a href="{{ url('horarios/create', ['dia' => $dia,'tramo' => $tramo,'fecha' => $fechaDia]) }}">Añadir registro</a>
+                                    @endif
                                 </td>
                             @endforeach
                         </tr>
                     @endforeach
+
                 </tbody>
 
 
-            </table>{{$horarios}}
+            </table>{{ $horarios }}
         </div>
     @endsection
 </body>

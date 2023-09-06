@@ -74,6 +74,9 @@ Route::get('/alumnos/{grupo}/mostrar-alumnos', [AlumnoController::class, 'mostra
 Route::get("/grupos-clases/grupos/{grupo}/asignar-alumnos", [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar-alumnos')->middleware('auth');
 
 
+//Ruta para acceder al formulario de Horario(create) mediante el botón disponible en la casilla vacia del horario
+Route::get("horarios/create/{dia}/{tramo}/{fecha}", [HorarioController::class, 'create']);
+
 //Para acceder a la funcion asociada a buscar el alumno
 /** Route::get('/alumnos/searchAlumno', [AlumnoController::class, 'buscarAlumno']);
 

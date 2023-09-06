@@ -37,11 +37,11 @@
        <div class="form-group">
            <label for="diaSemana0">Día de la semana:</label>
            <select name="diaSemana[]" id="diaSemana0" required>
-               <option value="Lunes">Lunes</option>
-               <option value="Martes">Martes</option>
-               <option value="Miércoles">Miércoles</option>
-               <option value="Jueves">Jueves</option>
-               <option value="Viernes">Viernes</option>
+               <option value="Lunes" {{ $datos['dia'] == 'Lunes' ? 'selected' : '' }}>Lunes</option>
+               <option value="Martes" {{ $datos['dia'] == 'Martes' ? 'selected' : '' }}>Martes</option>
+            <option value="Miércoles" {{ $datos['dia'] == 'Miércoles' ? 'selected' : '' }}>Miércoles</option>
+               <option value="Jueves" {{ $datos['dia'] == 'Jueves' ? 'selected' : '' }}>Jueves</option>
+               <option value="Viernes" {{ $datos['dia'] == 'Viernes' ? 'selected' : '' }}>Viernes</option>
            </select>
            <button type="button" id="agregarDia">+</button>
        </div>
@@ -57,24 +57,25 @@
 
        -->
        <div class="form-group">
-           <select name="tramoHorario" id="tramoHorario">
-               <option value="default">Elige un tramo horario</option>
-               <option value="10:00 --- 11:20">10:00 --- 11:20</option>
-               <option value="11:30 --- 12:50">11:30 --- 12:50</option>
-               <option value="13:00 --- 14:20">13:00 --- 14:20</option>
-               <option value="15:00 --- 16:20">15:00 --- 16:20</option>
-               <option value="16:30 --- 17:50">16:30 --- 17:50</option>
-               <option value="18:00 --- 19:20">18:00 --- 19:20</option>
-               <option value="19:30 --- 20:50">19:30 --- 20:50</option>
-           </select>
-       </div>
+    <select name="tramoHorario" id="tramoHorario">
+        <option value="default">Elige un tramo horario</option>
+        <option value="10:00 --- 11:20" {{ $datos['tramo'] == '10:00 --- 11:20' ? 'selected' : '' }}>10:00 --- 11:20</option>
+        <option value="11:30 --- 12:50" {{ $datos['tramo'] == '11:30 --- 12:50' ? 'selected' : '' }}>11:30 --- 12:50</option>
+        <option value="13:00 --- 14:20" {{ $datos['tramo'] == '13:00 --- 14:20' ? 'selected' : '' }}>13:00 --- 14:20</option>
+        <option value="15:00 --- 16:20" {{ $datos['tramo'] == '15:00 --- 16:20' ? 'selected' : '' }}>15:00 --- 16:20</option>
+        <option value="16:30 --- 17:50" {{ $datos['tramo'] == '16:30 --- 17:50' ? 'selected' : '' }}>16:30 --- 17:50</option>
+        <option value="18:00 --- 19:20" {{ $datos['tramo'] == '18:00 --- 19:20' ? 'selected' : '' }}>18:00 --- 19:20</option>
+        <option value="19:30 --- 20:50" {{ $datos['tramo'] == '19:30 --- 20:50' ? 'selected' : '' }}>19:30 --- 20:50</option>
+    </select>
+</div>
+
 
        <input type="hidden" name="horaInicio" id="horaInicio">
        <input type="hidden" name="horaFin" id="horaFin">
 
        <div class="form-group">
            <label for="primerDia">Primer día:</label>
-           <input type="date" id="primerDia" name="primerDia" required>
+           <input type="date" id="primerDia" name="primerDia" required value="{{ isset($datos['fecha']) ? $datos['fecha'] : '' }}"">
        </div>
 
        <div class="form-group">
