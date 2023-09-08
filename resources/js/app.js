@@ -1,7 +1,7 @@
 import "./bootstrap";
 console.log("Script cargado");
 
-$(document).ready(function () {
+/*$(document).ready(function () {
     $("#tramoHorario").change(function () {
         const tramo = $(this).val(); //Captura del valor del select
         console.log("tramo" + tramo);
@@ -17,7 +17,7 @@ $(document).ready(function () {
         }
     });
 });
-
+*/
 $(document).ready(function () {
     let contador = 1;
 

@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    @extends('layouts.app', ['modo' => 'grupo'])
+    @extends('layouts.app', ['modo' => 'Horarios'])
 
     @section('content')
         <div class="container">

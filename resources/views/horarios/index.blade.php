@@ -13,18 +13,7 @@ use Carbon\Carbon;
 </head>
 
 <body>
-    @if (session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    @if (session('mensaje'))
-        <div class="alert alert-success">
-            {{ session('mensaje') }}
-        </div>
-    @endif
-
+    
     @extends('layouts.app', ['modo' => 'Horarios'])
     @section('content')
         <div class="container">
@@ -76,9 +65,14 @@ use Carbon\Carbon;
                                     @endphp
 
                                     @if ($matchedHorario)
-                                        {{ $matchedHorario->codigoClase }}
+                                    <?php
+                                        $idHorario = $matchedHorario->id
+                                    ?>
+                                        <a href="{{ url('horarios/edit', ['dia' => $dia,'tramo' => $tramo,'fecha' => $fechaDia, 'id' => $idHorario])}}">
+                                        {{ $matchedHorario->clase->nombre }}
+                                        </a>
                                     @else
-                                        <a href="{{ url('horarios/create', ['dia' => $dia,'tramo' => $tramo,'fecha' => $fechaDia]) }}">Añadir registro</a>
+                                        <a href="{{ url('horarios/create', ['dia' => $dia,'tramo' => $tramo,'fecha' => $fechaDia]) }}">Crear</a>
                                     @endif
                                 </td>
                             @endforeach

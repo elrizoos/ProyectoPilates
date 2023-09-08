@@ -24,7 +24,7 @@ class HorarioController extends Controller
         //Recogemos el valor del input de la semana escogida
         $semana = $request->input('semana');
         $currentDate = Carbon::parse($semana);
-        if($semana) {
+        if ($semana) {
 
             // Para encontrar el inicio de la semana (Lunes)
             $startOfWeek = date('Y-m-d', strtotime('monday this week', strtotime($semana)));
@@ -39,7 +39,7 @@ class HorarioController extends Controller
                 ->orderBy('primerDia', 'asc')
                 ->orderBy('horaInicio', 'asc')
                 ->get();
-            
+
             //dd($horarios);
             return view('horarios.index', [
                 'horarios' => $horarios,
@@ -70,7 +70,7 @@ class HorarioController extends Controller
             ]);
         }
 
-        
+
     }
 
 
@@ -80,7 +80,16 @@ class HorarioController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create($dia, $tramo, $fecha)
+    public function create()
+    {
+        $clases = Clase::all();
+        $empleados = Empleado::all();
+        $grupos = Grupo::all();
+        return view('horarios.create', compact('clases', 'empleados', 'grupos', ));
+    }
+
+
+    public function createPredefinido($dia, $tramo, $fecha)
     {
         //Decodificar la variable tramo enviada por url
         $tramo = urldecode($tramo);
@@ -99,7 +108,6 @@ class HorarioController extends Controller
         return view('horarios.create', compact('clases', 'empleados', 'grupos', 'datos'));
     }
 
-   
     /**
      * Store a newly created resource in storage.
      */
@@ -119,7 +127,7 @@ class HorarioController extends Controller
                 Tramo 7: 19:30 --- 20:50
 
          */
-            $tramosHorarios = [
+            /*$tramosHorarios = [
                 '10:00',
                 '11:30',
                 '13:00',
@@ -137,15 +145,30 @@ class HorarioController extends Controller
                 '19:20',
                 '20:50',
             ];
+*/
+
+            $tramos = [
+                ['10:00', '11:20'],
+                ['11:30', '12:50'],
+                ['13:00', '14:20'],
+                ['15:00', '16:20'],
+                ['16:30', '17:50'],
+                ['18:00', '19:20'],
+                ['19:30', '20:50']
+            ];
+
+            //Convertimos el array a String
+            $tramoString = array_map(function ($tramo) {
+                return implode(' --- ', $tramo);
+            }, $tramos);
 
 
             $campos = [
-                'codigoClase' => 'required|integer|max:3',
-                'codigoEmpleado' => 'required|integer|max:3',
-                'codigoGrupo' => 'required|integer|max:3',
+                'codigoClase' => 'required|integer',
+                'codigoEmpleado' => 'required|integer',
+                'codigoGrupo' => 'required|integer',
                 'diaSemana.*' => 'required|in:Lunes,Martes,Miércoles,Jueves,Viernes',
-                'horaInicio' => 'required|in:' . implode(',', $tramosHorarios),
-                'horaFin' => 'required|in:' . implode(',', $tramosHorarios2),
+                'tramoHorario' => 'required|in:' . implode(',', $tramoString),
                 'primerDia' => 'required|date',
                 'repetir' => 'required|boolean',
                 'repeticiones' => 'required|integer',
@@ -216,7 +239,7 @@ class HorarioController extends Controller
 
         } catch (\Exception $e) {
             echo "mensaje de error: " . $e->getMessage();
-           
+
         }
     }
 
@@ -231,24 +254,104 @@ class HorarioController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Horario $horario)
+    public function edit($dia, $tramo, $fecha, $id)
     {
-        //
+        //Decodificar la variable tramo enviada por url
+        $tramo = urldecode($tramo);
+
+        //Agrupar las variables en un array
+        $datos = [
+            'dia' => $dia,
+            'tramo' => $tramo,
+            'fecha' => $fecha
+        ];
+
+        //Buscamos el horarios en la BD
+        $horario = Horario::findOrFail($id);
+
+        $clases = Clase::all();
+        $empleados = Empleado::all();
+        $grupos = Grupo::all();
+        return view('horarios.edit', compact('clases', 'empleados', 'grupos', 'datos', 'horario'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Horario $horario)
+    public function update(Request $request, $id)
     {
-        //
+        $tramos = [
+            ['10:00', '11:20'],
+            ['11:30', '12:50'],
+            ['13:00', '14:20'],
+            ['15:00', '16:20'],
+            ['16:30', '17:50'],
+            ['18:00', '19:20'],
+            ['19:30', '20:50']
+        ];
+
+        //Convertimos el array a String
+        $tramoString = array_map(function ($tramo) {
+            return implode(' --- ', $tramo);
+        }, $tramos);
+
+        $campos = [
+            'codigoClase' => 'required|integer',
+            'codigoEmpleado' => 'required|integer',
+            'codigoGrupo' => 'required|integer',
+            'diaSemana.*' => 'required|in:Lunes,Martes,Miércoles,Jueves,Viernes',
+            'tramoHorario' => 'required|in:' . implode(',', $tramoString),
+            'primerDia' => 'required|date',
+            'repetir' => 'required|boolean',
+            'repeticiones' => 'required|integer',
+        ];
+
+        $mensaje = ['required' => 'El :attribute es obligatorio'];
+        if (strpos(request()->tramoHorario, ' --- ') === false) {
+            return back()->with('error', 'El tramo horario es inválido.');
+        }
+
+        $tramo = explode(' --- ', request()->tramoHorario);
+        $horaInicio = $tramo[0];
+        $horaFin = $tramo[1];
+
+        $this->validate($request, $campos, $mensaje);
+        // Datos básicos del horario sin incluir los días, token, ni repetición.
+        $datosHorarioBase = request()->except('_method', '_token', 'tramoHorario');
+        $datosHorarioBase['horaInicio'] = $horaInicio;
+        $datosHorarioBase['horaFin'] = $horaFin;
+
+
+
+
+
+
+        Horario::where('id', '=', $id)->update($datosHorarioBase);
+
+        $horario = Horario::findOrFail($id);
+
+        $dia = $horario->diaSemana;
+        $tramo = $horario->horaInicio . ' --- ' . $horario->horaFin;
+        $fecha = $horario->primerDia;
+
+        $datos = [
+            'dia' => $dia,
+            'tramo' => $tramo,
+            'fecha' => $fecha
+        ];
+        $clases = Clase::all();
+        $empleados = Empleado::all();
+        $grupos = Grupo::all();
+        return view('horarios.edit', compact('clases', 'empleados', 'datos', 'grupos', 'horario'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Horario $horario)
+    public function destroy($id)
     {
-        //
+        Horario::destroy($id);
+
+        return redirect('horarios')->with('mensaje', 'horario borrado correctamente');
     }
 }

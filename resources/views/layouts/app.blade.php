@@ -41,31 +41,29 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
-                        @if ($modo === 'Centro de Control')
-                            <li class="nav-item">
-                                <a class="nav-link"href="{{ url('/empleados') }}">Gestionar Empleados</a>
-                            </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link"href="{{ url('/alumnos') }}">Gestionar Alumnos</a>
-                            </li>
-                        @endif
-                        @if ($modo === 'Alumnos')
+                        @if ($modo !== 'Empleados')
                             <li class="nav-item">
                                 <a class="nav-link"href="{{ url('/empleados') }}">Gestionar Empleados</a>
                             </li>
                         @endif
-                        @if ($modo === 'Empleados')
+                        @if ($modo !== 'Alumnos')
                             <li class="nav-item">
                                 <a class="nav-link"href="{{ url('/alumnos') }}">Gestionar Alumnos</a>
                             </li>
                         @endif
-                        <li class="nav-item">
-                            <a class="nav-link"href="{{ url('/horarios') }}">Gestionar Horarios</a>
-                        </li>
-                        <li cla ss="nav-item">
-                            <a class="nav-link"href="{{ url('/grupos-clases') }}">Gestionar Clases y Grupos</a>
-                        </li>
+                        @if ($modo !== 'Horarios')
+                            <li class="nav-item">
+                                <a class="nav-link"href="{{ url('/horarios') }}">Gestionar Horarios</a>
+                            </li>
+                        @endif
+
+                        @if ($modo !== 'Grupos y Clases')
+                            <li cla ss="nav-item">
+                                <a class="nav-link"href="{{ url('/grupos-clases') }}">Gestionar Clases y Grupos</a>
+                            </li>
+                        @endif
+
 
                         <!-- Authentication Links -->
                         @guest
@@ -104,6 +102,17 @@
                 </div>
             </div>
         </nav>
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if (session('mensaje'))
+            <div class="alert alert-success">
+                {{ session('mensaje') }}
+            </div>
+        @endif
 
         <main class="py-4">
             @yield('content')
