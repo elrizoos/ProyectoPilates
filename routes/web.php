@@ -47,8 +47,29 @@ Route::group(['middleware' => 'auth'], function () {
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/', function () {
         return view('index');
-    })->name('home');
+    })->name('home2');
 });
+//Asignando ruta para la busqueda de alumno
+Route::get("/alumnos/search", function () {
+    return view('alumnos.search');
+})->name('alumnos.search')->middleware('auth');
+Route::get('/alumnos/searchAlumno', [AlumnoController::class, 'buscarAlumno']);
+
+Route::get('/grupos-clases/grupos/{grupo}/mostrar-alumnos', [GrupoController::class, 'mostrarAlumnos'])->name('grupos.mostrar-alumnos')->middleware('auth');
+
+Route::get('/alumnos/{grupo}/mostrar-alumnos', [AlumnoController::class, 'mostrarAlumnos'])->name('alumnos.mostrar-alumnos')->middleware('auth');
+
+Route::get("/grupos-clases/grupos/{grupo}/asignar-alumnos", [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar-alumnos')->middleware('auth');
+
+
+
+
+
+//Ruta para acceder al formulario de edicion del registro
+Route::get("horarios/edit/{dia}/{tramo}/{fecha}/{id}", [HorarioController::class, 'edit']);
+
+//Ruta para acceder al formulario de Horario(create) mediante el botón disponible en la casilla vacia del horario
+Route::get("horarios/create/{dia}/{tramo}/{fecha}", [HorarioController::class, 'createPredefinido']);
 
 Route::resource('alumnos', AlumnoController::class)->middleware('auth');
 
@@ -60,18 +81,6 @@ Route::resource('grupos-clases', GrupoController::class)->middleware('auth');
 
 Route::resource('horarios', HorarioController::class)->middleware('auth');
 
-Route::get('/grupos-clases/grupos/{grupo}/mostrar-alumnos', [GrupoController::class, 'mostrarAlumnos'])->name('grupos.mostrar-alumnos')->middleware('auth');
-
-Route::get('/alumnos/{grupo}/mostrar-alumnos', [AlumnoController::class, 'mostrarAlumnos'])->name('alumnos.mostrar-alumnos')->middleware('auth');
-
-Route::get("/grupos-clases/grupos/{grupo}/asignar-alumnos", [GrupoController::class, 'asignarAlumnos'])->name('grupos.asignar-alumnos')->middleware('auth');
-
-
-
-//Asignando ruta para la busqueda de alumno
-Route::get("/alumnos/search", function() {
-    return view('alumnos.search');
-})->name('alumnos.search');
 
 //Para acceder a la funcion asociada a buscar el alumno
 /** Route::get('/alumnos/searchAlumno', [AlumnoController::class, 'buscarAlumno']);

@@ -20,8 +20,8 @@ return new class extends Migration
             $table->time('horaInicio');
             $table->time('horaFin');
             $table->date('primerDia');
-            $table->boolean('repetir');
-            $table->smallInteger('repeticiones');
+            $table->boolean('repetir')->nullable();
+            $table->smallInteger('repeticiones')->nullable();
             $table->foreign('codigoClase')->references('id')->on('clases');
             $table->foreign('codigoGrupo')->references('id')->on('grupos');
             $table->foreign('codigoEmpleado')->references('id')->on('empleados');

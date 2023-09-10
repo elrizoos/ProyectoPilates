@@ -27,7 +27,7 @@
                                 <a href="{{ url('/alumnos/create') }}">Crear nuevo alumno</a>
                             </li>
                             <li>
-                                <p id="mostrarPopupEdit">Editar alumno</p>
+                                <p id="mostrarPopupEdit">Gestionar alumno</p>
                                 <script>
                                     document.getElementById('mostrarPopupEdit').addEventListener('click', function(){
                                         //Url donde se encuentra el contenido que voy a mostrar en la ventana emergente
@@ -45,11 +45,9 @@
                                     });
                                 </script>
                             </li>
-                            <li>
-                                <p id="mostrarPopupDelete">Borrar alumno</p>
-                            </li>
+                            
                         </ul>
-                        <input type="button" value="Ir a la configuración general">
+                        <a href="{{ url('alumnos/')}}"><input type="button" value="Ir a la configuración general"></a>
                     </div>
                 </div>
                 <div class="col col-4">
