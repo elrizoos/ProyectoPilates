@@ -41,7 +41,7 @@
                    <label for="email">Email: </label>
                    <input class="form-control" type="text" name="email" id="email"
                        value="{{ isset($alumno->email) ? $alumno->email : old('email') }}">
-                    </div>
+               </div>
                <div class="form-group col col-4">
                    <label for="fechaNacimiento">Fecha Nacimeinto: </label><br>
                    <input type="date" name="fechaNacimiento" id="fechaNacimiento"
@@ -55,9 +55,13 @@
                        value="{{ isset($alumno->direccion) ? $alumno->direccion : old('direccion') }}">
                </div>
                <div class="form-group col col-4">
-                   <label for="grupo">Grupo: </label>
-                   <input class="form-control" type="text" name="grupo" id="grupo"
-                       value="{{ isset($alumno->grupo) ? $alumno->grupo : old('grupo') }}">
+                   <!-- Lista desplegable para Grupos -->
+                   <label for="codigoGrupo">Grupo: </label>
+                   <select name="codigoGrupo" class="form-control">
+                       @foreach ($grupos as $grupo)
+                           <option value="{{ $grupo->id }}">{{ $grupo->id }} {{ $grupo->nombre }}</option>
+                       @endforeach
+                   </select>
                </div>
 
            </div>

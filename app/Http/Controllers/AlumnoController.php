@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumno;
+use App\Models\Grupo;
 use App\Http\Controllers\GrupoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -15,6 +16,7 @@ class AlumnoController extends Controller
     public function index()
     {
         $datos['alumnos'] = Alumno::paginate(5);
+        
         return view('alumnos.index', $datos);
     }
 
@@ -77,7 +79,8 @@ class AlumnoController extends Controller
     public function edit($id)
     {
         $alumno = Alumno::findOrFail($id);
-        return view('alumnos.edit', compact('alumno'));
+        $grupos = Grupo::paginate(5);
+        return view('alumnos.edit', compact('alumno', 'grupos'));
     }
 
     /**
