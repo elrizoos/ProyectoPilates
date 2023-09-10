@@ -113,40 +113,11 @@ class HorarioController extends Controller
      */
     public function store(Request $request)
     {
+        //dump(request()->all());
         try {
+            //VALIDACION DE DATOS ENVIADOS
 
-            echo 'tramo: ' . request()->tramoHorario;
-
-            /** Tramos horarios establecidos:
-                Tramo 1: 10:00 --- 11:20
-                Tramo 2: 11:30 --- 12:50
-                Tramo 3: 13:00 --- 14:20
-                Tramo 4: 15:00 --- 16:20
-                Tramo 5: 16:30 --- 17:50
-                Tramo 6: 18:00 --- 19:20
-                Tramo 7: 19:30 --- 20:50
-
-         */
-            /*$tramosHorarios = [
-                '10:00',
-                '11:30',
-                '13:00',
-                '15:00',
-                '16:30',
-                '18:00',
-                '19:30',
-            ];
-            $tramosHorarios2 = [
-                '11:20',
-                '12:50',
-                '14:20',
-                '16:20',
-                '17:50',
-                '19:20',
-                '20:50',
-            ];
-*/
-
+            //Tramos horarios existentes, futuro configurables
             $tramos = [
                 ['10:00', '11:20'],
                 ['11:30', '12:50'],
@@ -157,12 +128,12 @@ class HorarioController extends Controller
                 ['19:30', '20:50']
             ];
 
-            //Convertimos el array a String
+            //Convierto el array a String separado por ' --- '
             $tramoString = array_map(function ($tramo) {
                 return implode(' --- ', $tramo);
             }, $tramos);
 
-
+            //Requisitos de los campos del formulario
             $campos = [
                 'codigoClase' => 'required|integer',
                 'codigoEmpleado' => 'required|integer',
@@ -174,71 +145,244 @@ class HorarioController extends Controller
                 'repeticiones' => 'required|integer',
             ];
 
+            //Mensaje en caso de error de verificacion
             $mensaje = [
                 'required' => 'El :attribute es obligatorio',
 
             ];
 
+            //Validacion del tramo horario enviado
             if (strpos(request()->tramoHorario, ' --- ') === false) {
                 return back()->with('error', 'El tramo horario es inválido.');
             }
 
+            //Validacion de los datos con sus requisitos y sus mensajes de validacion
+            $this->validate($request, $campos, $mensaje);
+
+
+            //Arrays necesarios
+            $daysConversion = [
+                'Lunes' => 'Monday',
+                'Martes' => 'Tuesday',
+                'Miércoles' => 'Wednesday',
+                'Jueves' => 'Thursday',
+                'Viernes' => 'Friday',
+                'Sábado' => 'Saturday',
+                'Domingo' => 'Sunday'
+            ];
+
+            $diasEspañol = [
+                'Monday' => 'Lunes',
+                'Tuesday' => 'Martes',
+                'Wednesday' => 'Miércoles',
+                'Thursday' => 'Jueves',
+                'Friday' => 'Viernes',
+                'Saturday' => 'Sábado',
+                'Sunday' => 'Domingo'
+            ];
+
+            $daysOfWeek = [
+                'Monday' => 0,
+                'Tuesday' => 1,
+                'Wednesday' => 2,
+                'Thursday' => 3,
+                'Friday' => 4,
+                'Saturday' => 5,
+                'Sunday' => 6,
+            ];
+            //Informacion del tramo horario
             $tramo = explode(' --- ', request()->tramoHorario);
+
+            //Asociando cada parte a su hora correspondiente
             $horaInicio = $tramo[0];
             $horaFin = $tramo[1];
 
-            $this->validate($request, $campos, $mensaje);
             // Datos básicos del horario sin incluir los días, token, ni repetición.
             $datosHorarioBase = request()->except('_token', 'tramoHorario', 'diaSemana', 'repetir', 'repeticiones');
+
+            //Establece las horas de inicio y fin obtenidas
             $datosHorarioBase['horaInicio'] = $horaInicio;
             $datosHorarioBase['horaFin'] = $horaFin;
+
+
             // Días seleccionados y número de repeticiones.
             $diasSeleccionados = $request->input('diaSemana');
-            $repeticiones = $request->input('repeticiones') ?? 1; // Por defecto será 1 si no se especifica repeticiones.
+            //dump($diasSeleccionados);
+            $repeticiones = $request->input('repeticiones');
 
-            // Para cada día seleccionado.
-            foreach ($diasSeleccionados as $dia) {
-                $daysConversion = [
-                    'Lunes' => 'Monday',
-                    'Martes' => 'Tuesday',
-                    'Miércoles' => 'Wednesday',
-                    'Jueves' => 'Thursday',
-                    'Viernes' => 'Friday',
-                    'Sábado' => 'Saturday',
-                    'Domingo' => 'Sunday'
-                ];
+            //El numero de registros que se va a guardar en la base de datos
+            $numeroRegistros = $repeticiones + 1;
 
-                $diaInEnglish = $daysConversion[$dia];
-                // Establecer la fecha de inicio basado en el día seleccionado.
-                $fechaInicio = new DateTime($request->input('primerDia'));
 
-                // Este bucle asegura que la fecha de inicio coincide con el primer día de la semana seleccionado.
-                while ($fechaInicio->format('l') != $diaInEnglish) {
-                    $fechaInicio->modify('+1 day');
+
+            $fecha = new DateTime($request->input('primerDia')); //Obtener la fecha seleccionada como primer dia
+            $fechaInicio = clone $fecha; //Clona la variable para no perder su valor en el futuro
+            $fechaDia = $fechaInicio->format('N'); //Devuelve en forma numerica Lunes:1 Domingo:7
+
+            $primerDia = $fecha->modify('-' . ($fechaDia - 1) . ' days'); //Obtiene el valor del primer dia de la semana
+            $primerDia = $primerDia->format('Y-m-d'); //Pasa a formato fecha
+            //dump($fechaInicio);
+            $primerDiaSemana = new DateTime($primerDia); //Creamos el valor de primer dia de la semana
+
+
+
+
+
+
+            //Obtiene el dia correspondiente a esa fecha
+            $diaIngresado = $fechaInicio->format('l');
+            //debug
+            //dump($diaIngresado);
+
+            //Convierte los dias seleccionados (dados en español) al ingles
+            $diasSeleccionadosInEnglish = array_map(function ($dia) use ($daysConversion) {
+                return $daysConversion[$dia];
+            }, $diasSeleccionados);
+            //Valida que la fecha sea uno de los dias seleccionados
+            if (!in_array($diaIngresado, $diasSeleccionadosInEnglish)) {
+                return back()->with('error', 'La fecha seleccionada no coincide con ninguno de los días seleccionados.');
+            }
+
+            //dump($diaIngresado !== $diasSeleccionadosInEnglish[0]);
+            //Comprobamos si el primer dia seleccionado no coincide con la fecha dada
+            if ($diaIngresado !== $diasSeleccionadosInEnglish[0]) {
+                $datosHorario = $datosHorarioBase; //Asigna los datos base a la variable nueva
+                $cumplido = false; //variable para el flujo de la funcion
+
+                foreach ($diasSeleccionadosInEnglish as $dia) {
+                    $repeticiones = $request->input('repeticiones');
+                    $numeroRegistros = $repeticiones + 1;
+                    //dump($repeticiones, $numeroRegistros);
+                    //dump($dia);
+                    //Creamos array para cada dia semanal
+                    //Averiguamos el dia del foreach para asignar al nombre del array
+                    $arrayNombre = "array" . $dia;
+                    //dump($arrayNombre);
+                    $$arrayNombre = [];
+                    $numeroDia = $daysOfWeek[$dia];
+                    ////dump($numeroDia);
+                    $diaUnoSemana = clone $primerDiaSemana; //Clona para no perder el valor
+                    $fechaDiaCorrespondiente = $diaUnoSemana->modify('+' . $numeroDia . ' days');
+                    //dump($diaUnoSemana);
+
+                    //dump($fechaDiaCorrespondiente);
+                    //si el dia no conincide con la fecha y aun no se ha cumplido
+                    if ($dia != $diaIngresado && !$cumplido) {
+                        $cloneFechaCorrespondiente = clone $fechaDiaCorrespondiente;
+                        //dump($cloneFechaCorrespondiente);
+                        $fechaSiguiente = $cloneFechaCorrespondiente->modify('+1 week');
+                        //dump($fechaSiguiente);
+
+                        array_push($$arrayNombre, clone $fechaSiguiente); // Clonamos el objeto antes de añadirlo al array
+                        //dump($$arrayNombre);
+
+                        while ($repeticiones > 0) {
+                            $fechaSiguiente = $fechaSiguiente->modify('+1 week');
+                            //dump($fechaSiguiente);
+                            array_push($$arrayNombre, clone $fechaSiguiente); // Clonamos el objeto antes de añadirlo al array
+                            //dump($$arrayNombre);
+                            $repeticiones--;
+                        }
+
+                        /**
+                         * do {
+
+                            $fechaSemanaSiguiente = $cloneFechaCorrespondiente->modify('+1 week');
+                            array_push($$arrayNombre, $fechaSemanaSiguiente);
+                            $repeticiones--;
+                        } while ($repeticiones > 0);
+                         */
+                        //dump($$arrayNombre);
+                        for ($i = 0; $i < $numeroRegistros; $i++) {
+                            //dump($$arrayNombre[$i]);
+                            $datosHorario['primerDia'] = $$arrayNombre[$i]->format('Y-m-d');
+                            $datosHorario['diaSemana'] = $diasEspañol[$dia];
+                            $datosHorario['horaInicio'] = $horaInicio;
+                            $datosHorario['horaFin'] = $horaFin;
+                            Horario::insert($datosHorario);
+                        }
+
+                    } else {
+                        $cloneFechaCorrespondiente = clone $fechaDiaCorrespondiente;
+                        //dump($cloneFechaCorrespondiente);
+                        $fechaSiguiente = $cloneFechaCorrespondiente;
+                        //dump($fechaSiguiente);
+
+                        array_push($$arrayNombre, clone $fechaSiguiente); // Clonamos el objeto antes de añadirlo al array
+                        //dump($$arrayNombre);
+
+                        while ($repeticiones > 0) {
+                            $fechaSiguiente = $fechaSiguiente->modify('+1 week');
+                            //dump($fechaSiguiente);
+                            array_push($$arrayNombre, clone $fechaSiguiente); // Clonamos el objeto antes de añadirlo al array
+                            //dump($$arrayNombre);
+                            $repeticiones--;
+                        }
+
+
+                        //Insertamos registros en la base de datos
+
+
+                        for ($i = 0; $i < $numeroRegistros; $i++) {
+                            //dump($$arrayNombre);
+                            $datosHorario['primerDia'] = $$arrayNombre[$i]->format('Y-m-d');
+                            $datosHorario['diaSemana'] = $diasEspañol[$dia];
+                            $datosHorario['horaInicio'] = $horaInicio;
+                            $datosHorario['horaFin'] = $horaFin;
+                            Horario::insert($datosHorario);
+                        }
+                        $cumplido = true;
+                    }
+                    ////dump($datosHorario);
                 }
+                //dd("hola");
 
-                // Si se desea repetir, se guardan múltiples registros, si no, solo uno.
 
-                for ($i = 0; $i <= $repeticiones; $i++) {
-                    $datosHorario = $datosHorarioBase;
-                    $datosHorario['primerDia'] = $fechaInicio->format('Y-m-d');
-                    $datosHorario['diaSemana'] = $dia;
+            } else {
+                // Para cada día seleccionado.
+                foreach ($diasSeleccionados as $dia) {
+                    $repeticiones = $request->input('repeticiones');
+                    $diaInEnglish = $daysConversion[$dia];
+                    //dump($diaInEnglish);
+                    // Establecer la fecha de inicio basado en el día seleccionado.
+                    $fechaInicio = new DateTime($request->input('primerDia'));
+                    //dump($fechaInicio);
+                    // Este bucle asegura que la fecha de inicio coincide con el primer día de la semana seleccionado.
+                    while ($fechaInicio->format('l') != $diaInEnglish) {
+                        $fechaInicio->modify('+1 day');
+                    }
+                    //dump($fechaInicio);
+                    // Si se desea repetir, se guardan múltiples registros, si no, solo uno.
 
-                    // Aquí nos aseguramos de que las horas se redefinan correctamente.
-                    $datosHorario['horaInicio'] = $horaInicio;
-                    $datosHorario['horaFin'] = $horaFin;
+                    do {
+                        $datosHorario = $datosHorarioBase;
+                        $datosHorario['primerDia'] = $fechaInicio->format('Y-m-d');
+                        //dump($dia);
+                        $datosHorario['diaSemana'] = $dia;
 
-                    Horario::insert($datosHorario);
+                        // Aquí nos aseguramos de que las horas se redefinan correctamente.
+                        $datosHorario['horaInicio'] = $horaInicio;
+                        $datosHorario['horaFin'] = $horaFin;
 
-                    $fechaInicio->modify('+7 day');
+                        Horario::insert($datosHorario);
+
+                        $fechaInicio->modify('+7 day');
+
+                        $repeticiones--;
+                    } while ($repeticiones >= 0);
+
+
+
                 }
-
 
             }
+            //dd("hola");
             return redirect('horarios')->with('mensaje', 'El registro del horario de la clase ha sido agregado con éxito');
 
+
+
         } catch (\Exception $e) {
-            echo "mensaje de error: " . $e->getMessage();
+            echo "mensaje de error: " . $e->getMessage() . ' ' . $e->getLine();
 
         }
     }

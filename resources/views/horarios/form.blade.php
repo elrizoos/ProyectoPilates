@@ -43,21 +43,29 @@
 
 
        <div class="form-group">
-           <label for="diaSemana0">Día de la semana:</label>
-           <select name="diaSemana[]" id="diaSemana0" required>
-               <option value="Lunes" {{ isset($datos['dia']) && $datos['dia'] == 'Lunes' ? 'selected' : '' }}>Lunes
-               </option>
-               <option value="Martes" {{ isset($datos['dia']) && $datos['dia'] == 'Martes' ? 'selected' : '' }}>Martes
-               </option>
-               <option value="Miércoles" {{ isset($datos['dia']) && $datos['dia'] == 'Miércoles' ? 'selected' : '' }}>
-                   Miércoles</option>
-               <option value="Jueves" {{ isset($datos['dia']) && $datos['dia'] == 'Jueves' ? 'selected' : '' }}>Jueves
-               </option>
-               <option value="Viernes" {{ isset($datos['dia']) && $datos['dia'] == 'Viernes' ? 'selected' : '' }}>
-                   Viernes</option>
-           </select>
-           <button type="button" id="agregarDia">+</button>
+           <label>Días de la semana:</label>
+           <div>
+               <input type="checkbox" id="lunes" name="diaSemana[]" value="Lunes">
+               <label for="lunes">Lunes</label>
+           </div>
+           <div>
+               <input type="checkbox" id="martes" name="diaSemana[]" value="Martes">
+               <label for="martes">Martes</label>
+           </div>
+           <div>
+               <input type="checkbox" id="miercoles" name="diaSemana[]" value="Miércoles">
+               <label for="miercoles">Miércoles</label>
+           </div>
+           <div>
+               <input type="checkbox" id="jueves" name="diaSemana[]" value="Jueves">
+               <label for="jueves">Jueves</label>
+           </div>
+           <div>
+               <input type="checkbox" id="viernes" name="diaSemana[]" value="Viernes">
+               <label for="viernes">Viernes</label>
+           </div>
        </div>
+
 
        <!-- Tramos horarios establecidos:
             Tramo 1: 10:00 --- 11:20
