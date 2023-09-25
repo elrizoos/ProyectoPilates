@@ -6,6 +6,7 @@ use App\Models\Horario;
 use App\Models\Clase;
 use App\Models\Empleado;
 use App\Models\Grupo;
+use App\Rules\ValidacionRegistro;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use PhpParser\Comment;
@@ -113,10 +114,13 @@ class HorarioController extends Controller
      */
     public function store(Request $request)
     {
-        //dump(request()->all());
+        if($this->comprobarExistencia($request)){
+            return back()->with('error', 'Ya existe un registro con el mismo primer dia y tramo horario');
+        }
+        
         try {
             //VALIDACION DE DATOS ENVIADOS
-
+            //dd(request()->all());
             //Tramos horarios existentes, futuro configurables
             $tramos = [
                 ['10:00', '11:20'],
@@ -140,7 +144,6 @@ class HorarioController extends Controller
                 'codigoGrupo' => 'required|integer',
                 'diaSemana.*' => 'required|in:Lunes,Martes,Miércoles,Jueves,Viernes',
                 'tramoHorario' => 'required|in:' . implode(',', $tramoString),
-                'primerDia' => 'required|date',
                 'repetir' => 'required|boolean',
                 'repeticiones' => 'required|integer',
             ];
@@ -497,5 +500,22 @@ class HorarioController extends Controller
         Horario::destroy($id);
 
         return redirect('horarios')->with('mensaje', 'horario borrado correctamente');
+    }
+
+    public function comprobarExistencia($request)
+    {
+        $tramo = explode(' --- ', request()->tramoHorario);
+
+        //Asociando cada parte a su hora correspondiente
+        $horaInicio = $tramo[0];
+        $horaFin = $tramo[1];
+
+        $existe = Horario::where('primerDia', $request->primerDia)
+        ->where('horaInicio', $horaInicio)
+        ->where('horaFin', $horaFin)
+        ->exists();
+
+       // dd($existe, $request->primerDia, $horaInicio, $horaFin);
+        return $existe;
     }
 }
