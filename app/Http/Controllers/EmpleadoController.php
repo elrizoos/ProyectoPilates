@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Empleado;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Rules\ValidacionRegistro;
 
 class EmpleadoController extends Controller
 {
@@ -30,7 +31,7 @@ class EmpleadoController extends Controller
      */
     public function store(Request $request)
     {
-
+       
         $campos = [
             'nombre' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',

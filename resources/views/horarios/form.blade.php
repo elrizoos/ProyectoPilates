@@ -43,25 +43,26 @@
 
 
        <div class="form-group">
+       
            <label>Días de la semana:</label>
            <div>
-               <input type="checkbox" id="lunes" name="diaSemana[]" value="Lunes">
+               <input type="checkbox" id="lunes" name="diaSemana[]" value="Lunes" {{isset($datos['dia']) && $datos['dia'] === 'Lunes' ? 'checked' : ''}}>
                <label for="lunes">Lunes</label>
            </div>
            <div>
-               <input type="checkbox" id="martes" name="diaSemana[]" value="Martes">
+               <input type="checkbox" id="martes" name="diaSemana[]" value="Martes" {{isset($datos['dia']) && $datos['dia'] === 'Martes' ? 'checked' : ''}}>
                <label for="martes">Martes</label>
            </div>
            <div>
-               <input type="checkbox" id="miercoles" name="diaSemana[]" value="Miércoles">
+               <input type="checkbox" id="miercoles" name="diaSemana[]" value="Miércoles" {{isset($datos['dia']) && $datos['dia'] === 'Miércoles' ? 'checked' : ''}}>
                <label for="miercoles">Miércoles</label>
            </div>
            <div>
-               <input type="checkbox" id="jueves" name="diaSemana[]" value="Jueves">
+               <input type="checkbox" id="jueves" name="diaSemana[]" value="Jueves" {{isset($datos['dia']) && $datos['dia'] === 'Jueves' ? 'checked' : ''}}>
                <label for="jueves">Jueves</label>
            </div>
            <div>
-               <input type="checkbox" id="viernes" name="diaSemana[]" value="Viernes">
+               <input type="checkbox" id="viernes" name="diaSemana[]" value="Viernes" {{isset($datos['dia']) && $datos['dia'] === 'Viernes' ? 'checked' : ''}}>
                <label for="viernes">Viernes</label>
            </div>
        </div>
